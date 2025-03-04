@@ -2,6 +2,7 @@ import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { useState, useEffect } from 'react'
 import { Editor } from '@monaco-editor/react'
+import { getLanguageFromFile } from '~/utils/editor'
 
 export const loader = async () => {
   return json({
@@ -15,6 +16,7 @@ export default function Index() {
   const [selectedFile, setSelectedFile] = useState('')
   const [fileContent, setFileContent] = useState('')
   const [error, setError] = useState('')
+  const [language, setLanguage] = useState('plaintext')
 
   useEffect(() => {
     loadFiles()
@@ -39,6 +41,7 @@ export default function Index() {
 
   const handleFileSelect = async (file: string) => {
     setSelectedFile(file)
+    setLanguage(getLanguageFromFile(file))
     try {
       const response = await fetch(
         `/api/files?path=${encodeURIComponent(file)}`
@@ -122,7 +125,7 @@ export default function Index() {
           <div className='h-[500px] border rounded overflow-hidden'>
             <Editor
               height='100%'
-              defaultLanguage='plaintext'
+              language={language}
               value={fileContent}
               onChange={handleEditorChange}
               theme='vs-light'
