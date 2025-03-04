@@ -2,6 +2,7 @@ import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { useState, useEffect } from 'react'
 import { Editor } from '@monaco-editor/react'
+import { type editor } from 'monaco-editor'
 import { getLanguageFromFile } from '~/utils/editor'
 
 export const loader = async () => {
@@ -17,7 +18,7 @@ export default function Index() {
   const [fileContent, setFileContent] = useState('')
   const [error, setError] = useState('')
   const [language, setLanguage] = useState('plaintext')
-
+  const [isValid, setIsValid] = useState(true)
   useEffect(() => {
     loadFiles()
   }, [])
@@ -96,6 +97,11 @@ export default function Index() {
     }
   }
 
+  const handleEditorValidate = (markers: editor.IMarker[]) => {
+    const hasErrors = markers.some(marker => marker.severity === 8)
+    setIsValid(!hasErrors)
+  }
+
   return (
     <div className='min-h-screen bg-gray-100 p-8'>
       <div className='max-w-4xl mx-auto'>
@@ -128,6 +134,7 @@ export default function Index() {
               language={language}
               value={fileContent}
               onChange={handleEditorChange}
+              onValidate={handleEditorValidate}
               theme='vs-light'
               options={{
                 minimap: { enabled: false },
@@ -140,7 +147,12 @@ export default function Index() {
           <div className='mt-4 flex justify-end'>
             <button
               onClick={handleFileSave}
-              className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600'
+              disabled={!isValid}
+              className={`px-4 py-2 rounded ${
+                isValid
+                  ? 'bg-green-500 text-white hover:bg-green-600'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
             >
               Save Changes
             </button>
