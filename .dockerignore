@@ -1,0 +1,44 @@
+# Dependencies
+node_modules
+.pnpm-store
+.npm
+.yarn
+
+# Build outputs
+build
+dist
+.cache
+.output
+
+# Development files
+.env
+.env.*
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor and OS files
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+
+# Test coverage
+coverage
+.nyc_output
+
+# Remix specific
+.cache
+public/build
+api/_build
+
+# Version control
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
